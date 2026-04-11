@@ -2,6 +2,10 @@
 
 Spin the wheel and let fate decide — a zero-dependency roulette, deployed on Cloudflare Pages.
 
+## Deployed
+
+<https://doreataru.kotaoue.workers.dev/>
+
 ## Features
 
 - Canvas-drawn colorful spinning wheel
