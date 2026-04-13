@@ -316,7 +316,6 @@
     let recorder = null;
     let recChunks = [];
     let lastVideoBlob = null;
-    let selectedSectorIndex = null;
 
     // ── DOM ───────────────────────────────────────────────────────────────
     const textarea = document.getElementById('items');
@@ -342,11 +341,7 @@
       history.replaceState(null, '', url.toString());
     }
 
-    textarea.addEventListener('input', () => {
-      selectedSectorIndex = null;
-      syncUrl();
-      draw();
-    });
+    textarea.addEventListener('input', () => { syncUrl(); draw(); });
 
     // ── Custom Modal Dialog ───────────────────────────────────────────────
     function showEditDialog(initialValue) {
@@ -411,7 +406,6 @@
         if (newText !== null && newText !== '') {
           items[sectorIdx] = newText;
           textarea.value = items.join('\n');
-          selectedSectorIndex = null;
           syncUrl();
           draw();
         }
@@ -421,13 +415,6 @@
     // ── Items ─────────────────────────────────────────────────────────────
     function getItems() {
       return textarea.value.split('\n').map(s => s.trim()).filter(Boolean);
-    }
-
-    function getWinningSectorIndex(items) {
-      const n = items.length;
-      const arc = (Math.PI * 2) / n;
-      const angle = ((-wheelAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-      return Math.floor(angle / arc) % n;
     }
 
     // ── Drawing ───────────────────────────────────────────────────────────
@@ -461,14 +448,13 @@
       for (let i = 0; i < n; i++) {
         const start = wheelAngle + arc * i - Math.PI / 2;
         const end = start + arc;
-        const isSelected = selectedSectorIndex === null || selectedSectorIndex === i;
 
         // Sector
         ctx.beginPath();
         ctx.moveTo(CX, CY);
         ctx.arc(CX, CY, R, start, end);
         ctx.closePath();
-        ctx.fillStyle = isSelected ? COLORS[i % COLORS.length] : '#d5dbe5';
+        ctx.fillStyle = COLORS[i % COLORS.length];
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 1.5;
@@ -482,7 +468,7 @@
 
         ctx.save();
         ctx.font = `bold ${fontSize}px sans-serif`;
-        ctx.fillStyle = isSelected ? '#fff' : '#7d8798';
+        ctx.fillStyle = '#fff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.shadowColor = 'rgba(0,0,0,0.7)';
@@ -541,7 +527,6 @@
       if (items.length < 2) { showToast('項目を2つ以上入力してください'); return; }
 
       spinning = true;
-      selectedSectorIndex = null;
       btnSpin.disabled = true;
       lastVideoBlob = null;
       btnDl.disabled = true;
@@ -571,8 +556,6 @@
 
         if (t >= 1) {
           wheelAngle = finalAngle;
-          selectedSectorIndex = getWinningSectorIndex(items);
-          draw();
           spinning = false;
           btnSpin.disabled = false;
           stopRecording();
