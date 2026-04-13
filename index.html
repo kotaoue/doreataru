@@ -124,16 +124,6 @@
       box-shadow: none;
     }
 
-    #result {
-      margin-top: 4px;
-      text-align: center;
-      font-size: 1rem;
-      font-weight: bold;
-      min-height: 1.8em;
-      color: #1889ff;
-      text-shadow: 0 2px 0 #ffffff, 0 8px 14px #1889ff3d;
-    }
-
     #canvas {
       display: block;
       max-width: min(480px, calc(100vw - 32px));
@@ -274,7 +264,6 @@
         <button id="btnShare">URLをコピー</button>
         <button id="btnDownload" disabled>動画をDL</button>
       </div>
-      <div id="result"></div>
     </div>
   </div>
 
@@ -333,7 +322,6 @@
     const btnSpin = document.getElementById('btnSpin');
     const btnShare = document.getElementById('btnShare');
     const btnDl = document.getElementById('btnDownload');
-    const resultDiv = document.getElementById('result');
     const toastEl = document.getElementById('toast');
     const editModal = document.getElementById('editModal');
     const editInput = document.getElementById('editInput');
@@ -540,7 +528,6 @@
 
       spinning = true;
       btnSpin.disabled = true;
-      resultDiv.textContent = '';
       lastVideoBlob = null;
       btnDl.disabled = true;
       startRecording();
@@ -571,22 +558,12 @@
           wheelAngle = finalAngle;
           spinning = false;
           btnSpin.disabled = false;
-          showResult(items);
           stopRecording();
           return;
         }
         animId = requestAnimationFrame(frame);
       }
       animId = requestAnimationFrame(frame);
-    }
-
-    function showResult(items) {
-      const n = items.length;
-      const arc = (Math.PI * 2) / n;
-      // Normalize -wheelAngle to [0, 2π) to find the pointed sector
-      const a = ((-wheelAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-      const idx = Math.floor(a / arc) % n;
-      resultDiv.textContent = '🎉 ' + items[idx];
     }
 
     // ── Video recording ───────────────────────────────────────────────────
