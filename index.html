@@ -48,6 +48,15 @@
       letter-spacing: 0.08em;
       color: #1889ff;
       text-shadow: 0 2px 0 #ffffff, 0 10px 20px #1889ff2e;
+      text-align: center;
+    }
+
+    .roulette-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      flex: 0 1 480px;
     }
 
     .layout {
@@ -248,19 +257,19 @@
 </head>
 
 <body>
-  <h1>ルーレット</h1>
-
   <div class="layout">
-    <canvas id="canvas" width="480" height="480"></canvas>
+    <div class="roulette-panel">
+      <h1>ルーレット</h1>
+      <canvas id="canvas" width="480" height="480"></canvas>
+    </div>
 
     <div class="sidebar">
       <label for="items">項目リスト（1行に1つ）</label>
-      <textarea id="items">カレー
-ラーメン
-うどん
-牛丼</textarea>
+      <textarea id="items">✊️
+✌️
+🖐️</textarea>
       <div class="btn-group">
-        <button id="btnSpin">回す</button>
+        <button id="btnSpin">START</button>
         <button id="btnShare">抽選URLをコピー</button>
         <button id="btnDownload" disabled>結果を動画でDL</button>
       </div>
