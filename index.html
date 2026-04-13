@@ -54,6 +54,7 @@
 
     .roulette-title {
       text-align: center;
+      cursor: pointer;
     }
 
     .sidebar-title {
@@ -335,6 +336,7 @@
 
     const FRAME_COLOR = '#33a4ff';
     const FRAME_WIDTH = 2;
+    const DEFAULT_ROULETTE_TITLE = 'ルーレット';
 
     // ── Canvas setup ──────────────────────────────────────────────────────
     const canvas = document.getElementById('canvas');
@@ -355,34 +357,50 @@
 
     // ── DOM ───────────────────────────────────────────────────────────────
     const textarea = document.getElementById('items');
+    const rouletteTitleEl = document.querySelector('.roulette-title');
     const btnSpin = document.getElementById('btnSpin');
     const btnShare = document.getElementById('btnShare');
     const btnDl = document.getElementById('btnDownload');
     const toastEl = document.getElementById('toast');
     const editModal = document.getElementById('editModal');
+    const modalHeaderEl = document.querySelector('.modal-header');
     const editInput = document.getElementById('editInput');
     const editOK = document.getElementById('editOK');
     const editCancel = document.getElementById('editCancel');
+
+    function setRouletteTitle(titleText) {
+      const t = titleText.trim() || DEFAULT_ROULETTE_TITLE;
+      rouletteTitleEl.textContent = t;
+      document.title = t;
+    }
 
     // ── URL ↔ textarea ────────────────────────────────────────────────────
     (function loadFromUrl() {
       const q = new URLSearchParams(location.search).get('q');
       if (q) textarea.value = q;
+      const t = new URLSearchParams(location.search).get('t');
+      if (t) setRouletteTitle(t);
     })();
 
     function syncUrl() {
       const q = textarea.value.trim();
+      const t = rouletteTitleEl.textContent.trim();
       const url = new URL(location.href);
       q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+      (t && t !== DEFAULT_ROULETTE_TITLE) ? url.searchParams.set('t', t) : url.searchParams.delete('t');
       history.replaceState(null, '', url.toString());
     }
 
     textarea.addEventListener('input', () => { syncUrl(); draw(); });
 
     // ── Custom Modal Dialog ───────────────────────────────────────────────
-    function showEditDialog(initialValue) {
+    function showEditDialog(initialValue, options = {}) {
+      const header = options.header ?? '項目を編集する？';
+      const placeholder = options.placeholder ?? '新しい項目';
       return new Promise((resolve) => {
+        modalHeaderEl.textContent = header;
         editInput.value = initialValue;
+        editInput.placeholder = placeholder;
         editModal.classList.add('show');
         editInput.focus();
 
@@ -414,6 +432,17 @@
         editInput.addEventListener('keydown', handleKeyDown);
       });
     }
+
+    rouletteTitleEl.addEventListener('click', async () => {
+      const editedTitle = await showEditDialog(rouletteTitleEl.textContent, {
+        header: 'タイトルを編集する？',
+        placeholder: 'ルーレット',
+      });
+      if (editedTitle !== null && editedTitle !== '') {
+        setRouletteTitle(editedTitle);
+        syncUrl();
+      }
+    });
 
     // ── Canvas click editing ──────────────────────────────────────────────
     canvas.addEventListener('click', async (e) => {
