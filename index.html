@@ -15,6 +15,11 @@
     gtag('config', 'G-562Q79X05Z');
   </script>
   <style>
+    :root {
+      --frame-color: #33a4ff;
+      --frame-width: 2px;
+    }
+
     *,
     *::before,
     *::after {
@@ -25,9 +30,9 @@
 
     body {
       background:
-        radial-gradient(circle at 12% 18%, #fff3b6 0%, transparent 35%),
-        radial-gradient(circle at 85% 15%, #c6f1ff 0%, transparent 34%),
-        linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
+        radial-gradient(circle at 10% 16%, #e7f7ff 0%, transparent 36%),
+        radial-gradient(circle at 88% 14%, #d9f1ff 0%, transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #f4fbff 100%);
       color: #1f3d6b;
       font-family: 'Segoe UI', system-ui, sans-serif;
       min-height: 100vh;
@@ -41,8 +46,8 @@
     h1 {
       font-size: 1.4rem;
       letter-spacing: 0.08em;
-      color: #ff6b6b;
-      text-shadow: 0 2px 0 #ffffff, 0 8px 20px #ff6b6b33;
+      color: #1889ff;
+      text-shadow: 0 2px 0 #ffffff, 0 10px 20px #1889ff2e;
     }
 
     .layout {
@@ -70,7 +75,7 @@
 
     textarea {
       background: #ffffff;
-      border: 2px solid #bfdcff;
+      border: var(--frame-width) solid var(--frame-color);
       color: #1f3d6b;
       font-family: inherit;
       font-size: 0.9rem;
@@ -79,13 +84,13 @@
       border-radius: 12px;
       resize: vertical;
       min-height: 180px;
-      box-shadow: 0 8px 20px #8ec5ff22;
+      box-shadow: 0 8px 20px #6fbeff26;
     }
 
     textarea:focus {
       outline: none;
-      border-color: #4ba3ff;
-      box-shadow: 0 0 0 4px #4ba3ff26;
+      border-color: var(--frame-color);
+      box-shadow: 0 0 0 4px #33a4ff24;
     }
 
     .btn-group {
@@ -95,22 +100,22 @@
     }
 
     button {
-      background: linear-gradient(135deg, #ffe36e 0%, #ff9d5c 100%);
-      border: 1px solid #ffb347;
-      color: #623100;
+      background: linear-gradient(135deg, #57beff 0%, #1889ff 100%);
+      border: var(--frame-width) solid var(--frame-color);
+      color: #ffffff;
       cursor: pointer;
       font-size: 0.9rem;
       padding: 8px 14px;
       border-radius: 999px;
       font-weight: 700;
       transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
-      box-shadow: 0 8px 16px #ff9d5c40;
+      box-shadow: 0 10px 18px #2697ff42;
     }
 
     button:hover:not(:disabled) {
       transform: translateY(-1px);
       filter: brightness(1.03);
-      box-shadow: 0 12px 22px #ff9d5c55;
+      box-shadow: 0 14px 24px #2697ff5a;
     }
 
     button:disabled {
@@ -125,14 +130,17 @@
       font-size: 1rem;
       font-weight: bold;
       min-height: 1.8em;
-      color: #ff5a78;
-      text-shadow: 0 2px 0 #ffffff, 0 8px 14px #ff5a7840;
+      color: #1889ff;
+      text-shadow: 0 2px 0 #ffffff, 0 8px 14px #1889ff3d;
     }
 
     #canvas {
       display: block;
       max-width: min(480px, calc(100vw - 32px));
-      filter: drop-shadow(0 14px 28px #2f80ed2b);
+      border: var(--frame-width) solid var(--frame-color);
+      border-radius: 16px;
+      background: #ffffff;
+      filter: drop-shadow(0 14px 28px #2f80ed26);
     }
 
     .toast {
@@ -141,7 +149,7 @@
       left: 50%;
       transform: translateX(-50%);
       background: #ffffff;
-      border: 2px solid #8ec5ff;
+      border: var(--frame-width) solid var(--frame-color);
       color: #1f3d6b;
       padding: 8px 20px;
       border-radius: 999px;
@@ -184,11 +192,14 @@
 
     // ── Palette ───────────────────────────────────────────────────────────
     const COLORS = [
-      '#e74c3c', '#e67e22', '#f39c12', '#f1c40f', '#2ecc71',
-      '#1abc9c', '#3498db', '#9b59b6', '#e91e63', '#00bcd4',
-      '#8bc34a', '#ff5722', '#607d8b', '#009688', '#673ab7',
-      '#ff9800', '#4caf50', '#2196f3', '#9c27b0', '#ff4081',
+      '#8fd3ff', '#75c8ff', '#5fbdff', '#4ab2ff', '#35a7ff',
+      '#2d9fff', '#2497ff', '#1d90ff', '#1688ff', '#0f80ff',
+      '#59c9ff', '#7fd8ff', '#4fc0ff', '#31b0ff', '#42b8ff',
+      '#56c2ff', '#2a9dff', '#359dff', '#6ecfff', '#49b8ff',
     ];
+
+    const FRAME_COLOR = '#33a4ff';
+    const FRAME_WIDTH = 2;
 
     // ── Canvas setup ──────────────────────────────────────────────────────
     const canvas = document.getElementById('canvas');
@@ -248,8 +259,8 @@
       ctx.arc(CX, CY, R, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
       ctx.fill();
-      ctx.strokeStyle = '#7db7ff';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = FRAME_COLOR;
+      ctx.lineWidth = FRAME_WIDTH;
       ctx.stroke();
       ctx.fillStyle = '#4f6e95';
       ctx.font = '14px sans-serif';
@@ -297,13 +308,20 @@
         ctx.restore();
       }
 
+      // Keep roulette outline consistent with other UI frames
+      ctx.beginPath();
+      ctx.arc(CX, CY, R, 0, Math.PI * 2);
+      ctx.strokeStyle = FRAME_COLOR;
+      ctx.lineWidth = FRAME_WIDTH;
+      ctx.stroke();
+
       // Center cap
       ctx.beginPath();
       ctx.arc(CX, CY, 18, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
       ctx.fill();
-      ctx.strokeStyle = '#5ea3ff';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = FRAME_COLOR;
+      ctx.lineWidth = FRAME_WIDTH;
       ctx.stroke();
     }
 
